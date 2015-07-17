@@ -2,15 +2,17 @@ package com.oracle.lnsd.entity;
 
 import java.util.List;
 
-import org.hibernate.Hibernate;
+import javax.annotation.Resource;
+
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.cfg.ImprovedNamingStrategy;
 import org.hibernate.classic.Session;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.oracle.lnsd.entity.many2many.KeCheng;
 import com.oracle.lnsd.entity.many2many.XueSheng;
@@ -24,44 +26,20 @@ import com.oracle.lnsd.entity.orphonRemoval.IdCard;
 import com.oracle.lnsd.entity.orphonRemoval.Pen;
 import com.oracle.lnsd.entity.orphonRemoval.Person;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:/application-cfg.xml")
+@Transactional	// 默认事务回滚
+@TransactionConfiguration(defaultRollback=false)	//每个测试方法默认不回滚
 public class EntityTest3 {
-	private static SessionFactory sessionFactroy;
+	
+	@Resource
+	private SessionFactory sessionFactroy;
 	private Session session;
-
-	@BeforeClass //总共被执行一次，最先执行
-	public static void setUpBeforeClass() throws Exception {
-		Configuration config = new Configuration()
-		.addAnnotatedClass(Users.class)
-		.addAnnotatedClass(NvShen.class)
-		.addAnnotatedClass(DiaoSi.class)
-		.addAnnotatedClass(Husband.class)
-		.addAnnotatedClass(Wife.class)
-		.addAnnotatedClass(DiaoSi.class)
-		.addAnnotatedClass(Classes.class)
-		.addAnnotatedClass(Student.class)
-		.addAnnotatedClass(XueSheng.class)
-		.addAnnotatedClass(KeCheng.class)
-		.addAnnotatedClass(Person.class)
-		.addAnnotatedClass(IdCard.class)
-		.addAnnotatedClass(Pen.class)
-		.setNamingStrategy(new ImprovedNamingStrategy()) //指定映射策略，节省注解
-		.configure();
-		sessionFactroy = config.buildSessionFactory();
-	}
 
 	@Before
 	//每个方法之前执行一次
 	public void setUp() throws Exception {
 		session = sessionFactroy.getCurrentSession();
-		session.beginTransaction();
-	}
-
-	@After
-	//每个方法执行完之后执行一次
-	public void tearDown() throws Exception {
-		if(this.session.isOpen()) {
-			this.session.getTransaction().commit(); //取得当前线程对应的Transaction对象
-		}
 	}
 
 	@Test
@@ -193,36 +171,9 @@ public class EntityTest3 {
 		session.delete(xs);
 	}
 	
-	@Test
-	/**
-	 * 演示延迟加载问题
-	 * @throws Exception
-	 */
-	public void test13() throws Exception {
-//		KeCheng yuwen = (KeCheng) session.get(KeCheng.class, 75);
-		KeCheng yuwen = (KeCheng) session.createCriteria(KeCheng.class).setMaxResults(1).uniqueResult();
-		Hibernate.initialize(yuwen.getXueShengList());
-		this.session.getTransaction().commit();
-		for (XueSheng xs : yuwen.getXueShengList()) {
-			System.out.println(xs.getName());
-		}
-	}
-	
-	/**
-	 * 演示延迟加载问题
-	 */
-	@Test
-	public void test14() {
-//		KeCheng yuwen = (KeCheng) session.load(KeCheng.class, 75);
-		KeCheng yuwen = (KeCheng) session.createCriteria(KeCheng.class).setMaxResults(1).uniqueResult();
-		Hibernate.initialize(yuwen.getXueShengList());
-		this.session.getTransaction().commit();
-		for (XueSheng xs : yuwen.getXueShengList()) {
-			System.out.println(xs.getName());
-		}
-	}
 	///演示orphonRemoval
 	@Test
+//	@Rollback(false)	// 设置不回滚
 	public void test15() {
 		//清空三张表的数据
 		this.session.createQuery("delete from IdCard").executeUpdate();
