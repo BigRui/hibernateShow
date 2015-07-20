@@ -13,7 +13,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 @MappedSuperclass
-public class EntityId implements Serializable {
+public abstract class EntityId implements Serializable {
 	/**
 	 * 
 	 */
@@ -24,9 +24,12 @@ public class EntityId implements Serializable {
 	
 //	@GeneratedValue(strategy=GenerationType.IDENTITY) //主键自动增长
 	
-	@GeneratedValue(strategy=GenerationType.AUTO) 
+//	@GeneratedValue(strategy=GenerationType.AUTO) 
 	//如果使用的是mysql之类的，则自动使用IDENTITY，如果发现是Oracle,
 	//默认使用序列，序列的名：hibernate_sequence
+	
+	@GeneratedValue(strategy=GenerationType.TABLE) 
+	//使用一张表来维护id值，这个更通用
 	private Integer id;
 
 	public Integer getId() {
