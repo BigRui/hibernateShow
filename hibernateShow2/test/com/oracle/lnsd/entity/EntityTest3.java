@@ -22,6 +22,9 @@ import com.oracle.lnsd.entity.hierarchy.joined.Pet;
 import com.oracle.lnsd.entity.hierarchy.singleTable.Animal;
 import com.oracle.lnsd.entity.hierarchy.singleTable.Bird;
 import com.oracle.lnsd.entity.hierarchy.singleTable.Rabbit;
+import com.oracle.lnsd.entity.hierarchy.tablePerClass.Bus;
+import com.oracle.lnsd.entity.hierarchy.tablePerClass.Car;
+import com.oracle.lnsd.entity.hierarchy.tablePerClass.Vehicle;
 import com.oracle.lnsd.entity.many2many.KeCheng;
 import com.oracle.lnsd.entity.many2many.XueSheng;
 import com.oracle.lnsd.entity.one2Many.Classes;
@@ -327,6 +330,37 @@ public class EntityTest3 {
 		List<Pet> pets = session.createCriteria(Pet.class).list();
 		for (Pet pet : pets) {
 			System.out.println(pet);
+		}
+	}
+	//-------------table-per-class²ßÂÔ
+	@Test
+	public void test23() {
+//		Vehicle vehicle = new Vehicle();
+//		vehicle.setSpeed(10F);
+//		vehicle.setCapacity(20);
+		
+		Car car = new Car();
+		car.setSpeed(200F);
+		car.setCapacity(4);
+		car.setPrice(100000D);
+		car.setColor("ºìÉ«");
+		
+		Bus bus = new Bus();
+		bus.setSpeed(20F);
+		bus.setCapacity(50);
+		bus.setStationCount(20);
+		bus.setTicketPrice(1F);
+		
+//		session.persist(vehicle);
+		session.persist(car);
+		session.persist(bus);
+	}
+	
+	@Test
+	public void test24() {
+		List<Vehicle> vehicles = session.createCriteria(Vehicle.class).list();
+		for (Vehicle vehicle : vehicles) {
+			System.out.println(vehicle);
 		}
 	}
 }
