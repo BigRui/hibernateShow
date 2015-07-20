@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -36,6 +37,11 @@ public class EntityTest3 {
 	private SessionFactory sessionFactroy;
 	private Session session;
 
+	@BeforeClass
+	public static void beforeClass() {
+		System.setProperty("log4jdbc.spylogdelegator.name", "net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator");
+	}
+	
 	@Before
 	//每个方法之前执行一次
 	public void setUp() throws Exception {
