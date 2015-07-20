@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.oracle.lnsd.entity.component.Fish;
 import com.oracle.lnsd.entity.component.Tail;
+import com.oracle.lnsd.entity.hierarchy.singleTable.Animal;
+import com.oracle.lnsd.entity.hierarchy.singleTable.Bird;
+import com.oracle.lnsd.entity.hierarchy.singleTable.Rabbit;
 import com.oracle.lnsd.entity.many2many.KeCheng;
 import com.oracle.lnsd.entity.many2many.XueSheng;
 import com.oracle.lnsd.entity.one2Many.Classes;
@@ -258,5 +261,39 @@ public class EntityTest3 {
 		Fish fish = (Fish) session.createCriteria(Fish.class).setMaxResults(1)
 				.uniqueResult();
 		System.out.println(fish);
+	}
+	
+	///////////////////////////演示继承映射
+	//////////////////////////single-table策略
+	@Test
+	public void test19() {
+		this.session.createQuery("delete from Animal").executeUpdate();
+		
+		Animal animal = new Animal();
+		animal.setName("动物");
+		animal.setWeight(10.5F);
+		
+		Bird bird = new Bird();
+		bird.setName("鸟");
+		bird.setWeight(1.5F);
+		bird.setFlySpeed(80.5F);
+		bird.setWingCount(2);
+		
+		Rabbit rabbit = new Rabbit();
+		rabbit.setName("兔子");
+		rabbit.setWeight(2.5F);
+		rabbit.setRanSpeed(70.3F);
+		rabbit.setLegCount(4);
+		
+		session.persist(animal);
+		session.persist(bird);
+		session.persist(rabbit);
+	}
+	@Test
+	public void test20() throws Exception {
+		List<Animal> animals = session.createCriteria(Animal.class).list();
+		for (Animal animal : animals) {
+			System.out.println(animal);
+		}
 	}
 }
