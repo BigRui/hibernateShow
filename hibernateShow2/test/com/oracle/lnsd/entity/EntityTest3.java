@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.oracle.lnsd.entity.component.Fish;
 import com.oracle.lnsd.entity.component.Tail;
+import com.oracle.lnsd.entity.hierarchy.joined.Cat;
+import com.oracle.lnsd.entity.hierarchy.joined.Dog;
+import com.oracle.lnsd.entity.hierarchy.joined.Pet;
 import com.oracle.lnsd.entity.hierarchy.singleTable.Animal;
 import com.oracle.lnsd.entity.hierarchy.singleTable.Bird;
 import com.oracle.lnsd.entity.hierarchy.singleTable.Rabbit;
@@ -294,6 +297,36 @@ public class EntityTest3 {
 		List<Animal> animals = session.createCriteria(Animal.class).list();
 		for (Animal animal : animals) {
 			System.out.println(animal);
+		}
+	}
+	//-------------joind_table²ßÂÔ
+	@Test
+	public void test21() {
+		Pet p = new Pet();
+		p.setName("³èÎï");
+		p.setPrice(100.5F);
+		
+		Dog dog = new Dog();
+		dog.setName("¹·¹·");
+		dog.setPrice(200F);
+		dog.setCanWatchDoor(true);
+		dog.setHeight(1F);
+		
+		Cat cat = new Cat();
+		cat.setName("ß÷ÐÇÈË");
+		cat.setPrice(300F);
+		cat.setCatchMouse(false);
+		cat.setFoodType("Ã¨Á¸");
+		
+		session.persist(p);
+		session.persist(dog);
+		session.persist(cat);
+	}
+	@Test
+	public void test22() {
+		List<Pet> pets = session.createCriteria(Pet.class).list();
+		for (Pet pet : pets) {
+			System.out.println(pet);
 		}
 	}
 }
