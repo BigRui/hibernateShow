@@ -37,10 +37,10 @@ public class EntityTest3 {
 	private SessionFactory sessionFactroy;
 	private Session session;
 
-	@BeforeClass
+/*	@BeforeClass
 	public static void beforeClass() {
 		System.setProperty("log4jdbc.spylogdelegator.name", "net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator");
-	}
+	}*/
 	
 	@Before
 	//每个方法之前执行一次

@@ -9,7 +9,8 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
 
 	<context:property-placeholder location="jdbc.properties"/>
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+	<bean id="dataSource" depends-on="setSysPro"
+	 class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="${jdbc.driverClassName}"/>
 		<property name="jdbcUrl" value="${jdbc.url}"/>
 		<property name="user" value="${jdbc.username}"/>
@@ -43,4 +44,16 @@
 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" p:sessionFactory-ref="sessionFactory" />
 	<!-- 采用注解驱动的方式管理事务 -->
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
+	<!-- 设置系统环境变量 -->
+	<!-- 设置java系统属性，相当于System.setProperty("key", "value") -->
+	<bean id="setSysPro"
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="targetObject" value="#{@systemProperties}" />
+		<property name="targetMethod" value="putAll" />
+		<property name="arguments">
+			<props>
+				<prop key="log4jdbc.spylogdelegator.name">net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator</prop>
+			</props>
+		</property>
+	</bean>
 </beans>
