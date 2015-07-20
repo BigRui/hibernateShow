@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -15,6 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oracle.lnsd.entity.component.Fish;
+import com.oracle.lnsd.entity.component.Tail;
 import com.oracle.lnsd.entity.many2many.KeCheng;
 import com.oracle.lnsd.entity.many2many.XueSheng;
 import com.oracle.lnsd.entity.one2Many.Classes;
@@ -234,5 +235,28 @@ public class EntityTest3 {
 		//解除第一支笔和person的关系
 		pens.remove(0).setPerson(null);
 		session.persist(person);
+	}
+	
+	/////////////////////////演示组件映射
+	@Test
+	public void test17() {
+		this.session.createQuery("delete from Fish").executeUpdate();
+		
+		Fish fish = new Fish();
+		fish.setName("鲤鱼");
+		fish.setColor("red");
+
+		Tail tail = new Tail();
+		tail.setName("鲤鱼尾巴");
+		tail.setLength(1);
+		fish.setTail(tail);
+		session.persist(fish);
+	}
+
+	@Test
+	public void test18() {
+		Fish fish = (Fish) session.createCriteria(Fish.class).setMaxResults(1)
+				.uniqueResult();
+		System.out.println(fish);
 	}
 }
